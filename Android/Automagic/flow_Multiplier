@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<data version="1.37.0">
+  <action type="input_dialog">
+    <useDefaultName>true</useDefaultName>
+    <name>Eingabedialog: Multiplicator Zahl </name>
+    <title>Multiplicator</title>
+    <inputDialogType>NUMBER</inputDialogType>
+    <prompt></prompt>
+    <inputValues></inputValues>
+    <defaultValue>2</defaultValue>
+    <titleFontSize>DEFAULT</titleFontSize>
+    <promptFontSize>DEFAULT</promptFontSize>
+    <fontSize>DEFAULT</fontSize>
+    <timeoutEnabled>false</timeoutEnabled>
+    <timeout>60000</timeout>
+    <defaultValueOnTimeout></defaultValueOnTimeout>
+    <showWhenLocked>false</showWhenLocked>
+    <turnScreenOn>false</turnScreenOn>
+    <keepScreenOn>false</keepScreenOn>
+    <enlargeDialogWidth>false</enlargeDialogWidth>
+    <keyboardCapitalizeSentences>false</keyboardCapitalizeSentences>
+  </action>
+  <action type="input_dialog">
+    <useDefaultName>true</useDefaultName>
+    <name>Eingabedialog: Text to multiply Einzeiliger Text </name>
+    <title>Text to multiply</title>
+    <inputDialogType>SINGLE_LINE_TEXT</inputDialogType>
+    <prompt></prompt>
+    <inputValues></inputValues>
+    <defaultValue></defaultValue>
+    <titleFontSize>DEFAULT</titleFontSize>
+    <promptFontSize>DEFAULT</promptFontSize>
+    <fontSize>DEFAULT</fontSize>
+    <timeoutEnabled>false</timeoutEnabled>
+    <timeout>60000</timeout>
+    <defaultValueOnTimeout></defaultValueOnTimeout>
+    <showWhenLocked>false</showWhenLocked>
+    <turnScreenOn>false</turnScreenOn>
+    <keepScreenOn>false</keepScreenOn>
+    <enlargeDialogWidth>false</enlargeDialogWidth>
+    <keyboardCapitalizeSentences>false</keyboardCapitalizeSentences>
+  </action>
+  <action type="copy_text_to_clipboard">
+    <useDefaultName>true</useDefaultName>
+    <name>Kopiere Text in die Zwischenablage: {gesText}</name>
+    <text>{gesText}</text>
+  </action>
+  <action type="message_dialog">
+    <useDefaultName>true</useDefaultName>
+    <name>Meldungsdialog: Generated: {gesText}</name>
+    <title>Generated:</title>
+    <message>{gesText}</message>
+    <buttonLabel>Kopieren</buttonLabel>
+    <timeoutEnabled>false</timeoutEnabled>
+    <timeout>60000</timeout>
+  </action>
+  <action type="script">
+    <useDefaultName>true</useDefaultName>
+    <name>Script: gesText = ""; for(i in [1 to value]) { gesText = gesText + text; }</name>
+    <script>gesText = "";
+for(i in [1 to value]) {
+  gesText = gesText + text;
+}</script>
+  </action>
+  <action type="script">
+    <useDefaultName>true</useDefaultName>
+    <name>Script: text = value</name>
+    <script>text = value</script>
+  </action>
+  <flow type="flow">
+    <name>Multiplier</name>
+    <enabled>true</enabled>
+    <executionPolicy>PARALLEL</executionPolicy>
+    <triggercontainer id="t1" x="70.0" y="52.5" />
+    <actioncontainer id="t2" x="70.0" y="297.5">Script: text = value</actioncontainer>
+    <actioncontainer id="t3" x="70.0" y="507.5">Script: gesText = ""; for(i in [1 to value]) { gesText = gesText + text; }</actioncontainer>
+    <actioncontainer id="t4" x="70.0" y="717.5">Kopiere Text in die Zwischenablage: {gesText}</actioncontainer>
+    <actioncontainer id="t5" x="70.0" y="612.5">Meldungsdialog: Generated: {gesText}</actioncontainer>
+    <actioncontainer id="t6" x="70.0" y="192.5">Eingabedialog: Text to multiply Einzeiliger Text </actioncontainer>
+    <actioncontainer id="t7" x="70.0" y="402.5">Eingabedialog: Multiplicator Zahl </actioncontainer>
+    <connection from="t1" to="t6" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t2" to="t7" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t3" to="t5" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t5" to="t4" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t6" to="t2" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t7" to="t3" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+  </flow>
+</data>
