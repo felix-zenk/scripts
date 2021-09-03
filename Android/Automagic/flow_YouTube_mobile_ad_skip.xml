@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<data version="1.37.0">
+  <trigger type="app_task_started">
+    <useDefaultName>false</useDefaultName>
+    <name>Opened YouTube App</name>
+    <enabled>true</enabled>
+    <method>CLASSIC</method>
+    <packageNameFilter>com.google.android.youtube</packageNameFilter>
+  </trigger>
+  <condition type="app_task_running">
+    <useDefaultName>false</useDefaultName>
+    <name>isYouTubeOpen</name>
+    <method>CLASSIC</method>
+    <packageNameList>com.google.android.youtube</packageNameList>
+    <checkMostRecentAppTaskOnly>true</checkMostRecentAppTaskOnly>
+  </condition>
+  <action type="control_user_interface">
+    <useDefaultName>false</useDefaultName>
+    <name>isAdPresent             &amp;                       Skip ad</name>
+    <script>// Close ad banner
+if(existsElementById("com.google.android.youtube:id/header_container")) {
+  log("Closing ad banner...");
+  bounds = getBoundsById("com.google.android.youtube:id/header_container");
+  if(bounds != null) {
+    log(bounds);
+    cross_x = bounds[0]+bounds[2]*1;
+    cross_y = bounds[1]+bounds[3]*0.5;
+    click(cross_x, cross_y);
+  }
+  else {
+    click("Anzeigenfeld schließen"); // has no id
+    log("Closed ad banner");
+  }
+}
+// Close YouTube Premium banner
+if(false) {
+  log("Closed YouTube Premium banner");
+}
+
+
+// is ad present
+if(existsElementById("com.google.android.youtube:id/countdown_text") || existsElementById("com.google.android.youtube:id/skip_ad_button")) {
+  // skip ad
+  ad_present = true;
+  remainingTimeString = getTextById("com.google.android.youtube:id/countdown_text");
+  if(remainingTimeString != null) {
+    log("Ad is skippable!");
+    if (matches(remainingTimeString, "\\d")) {
+      remainingTime = toNumber(remainingTimeString);
+      log("Detected remaining time: "+remainingTimeString+"s.");
+      if(remainingTime &lt; 3) {
+        timeToSleep = 200;
+      }
+      else {
+        timeToSleep = 1000;
+      }
+    }
+    else {
+      log("Ad is unskippable");
+    }
+  }
+  else {
+    log("Skipping ad...");
+    clickById("com.google.android.youtube:id/skip_ad_button");
+    timeToSleep = 1000; // prevent multiple activations
+  }
+}
+
+// not present or tried to skip
+log("Waiting "+"timeInSeconds"+"ms.");
+sleep(timeToSleep);
+return;</script>
+  </action>
+  <action type="script">
+    <useDefaultName>false</useDefaultName>
+    <name>Variables</name>
+    <script>timeToSleep = 4000; // standard waiting time
+ad_present = false;</script>
+  </action>
+  <flow type="flow">
+    <name>YouTube Mobile - ad skip</name>
+    <enabled>true</enabled>
+    <executionPolicy>PARALLEL</executionPolicy>
+    <actioncontainer id="t1" x="-175.0" y="682.5"></actioncontainer>
+    <notecontainer id="t2" x="-175.0" y="682.5" w="140.0" h="105.0">EMPTY</notecontainer>
+    <triggercontainer id="t3" x="70.00001" y="87.50001">
+      <trigger>Opened YouTube App</trigger>
+    </triggercontainer>
+    <actioncontainer id="t4" x="70.00002" y="227.50003">Variables</actioncontainer>
+    <conditioncontainer id="t5" x="70.0" y="402.5">isYouTubeOpen</conditioncontainer>
+    <actioncontainer id="t6" x="70.00001" y="577.5">isAdPresent             &amp;                       Skip ad</actioncontainer>
+    <connection from="t3" to="t4" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t4" to="t5" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t5" to="t1" type="FALSE" sourcePosition="WEST" targetPosition="NORTH" />
+    <connection from="t5" to="t6" type="TRUE" sourcePosition="SOUTH" targetPosition="NORTH" />
+    <connection from="t6" to="t5" type="NORMAL" sourcePosition="EAST" targetPosition="EAST" />
+  </flow>
+</data>
