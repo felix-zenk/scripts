@@ -19,8 +19,7 @@ function random_mac {
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# DEBUG
-ifconfig eth0 up
+
 
 # get the interface name
 interface=$(ifconfig | grep ": flags" | cut -d ":" -f 1 | head -n 1)
